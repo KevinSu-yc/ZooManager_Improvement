@@ -1,43 +1,50 @@
 ﻿using System;
 namespace ZooManager
-{
+{    
+    /// <summary>
+     /// An Animal's subclass called Mouse.
+     /// </summary>
     public class Mouse : Animal
     {
+        /// <summary>
+        /// Initialize emoji, species, name, reaction time, predators of Mouse
+        /// </summary>
+        /// <param name="name">A name to be assigned to the Mouse</param>
         public Mouse(string name)
         {
             emoji = "🐭";
             species = "mouse";
-            this.name = name; // "this" to clarify instance vs. method parameter
-            reactionTime = new Random().Next(1, 4); // reaction time of 1 (fast) to 3
-            /* Note that Mouse reactionTime range is smaller than Cat reactionTime,
-             * so mice are more likely to react to their surroundings faster than cats!
-             */
+            this.name = name;
+            reactionTime = new Random().Next(1, 4); // Mouse's reaction time can be 1 to 5
 
+            /* Mouse runs away from Cat and Raptor
+             * Assign an array of 2 string that represent Cat and Raptors species
+             * Is used in Animal.Flee(), loop through predators array to detect "cat" and "raptor"
+             */
             predators = new string[2] { "cat", "raptor" };
         }
 
+        /// <summary>
+        /// Calls Activate() in Animal first, then prints a message about being a mouse on Console.
+        /// Flees from predator if there is one, otherwise, stays at the same location.
+        /// </summary>
+        /// <returns>Returns a message about the action made while calling this method.</returns>
         public override string Activate()
         {
             base.Activate();
             Console.WriteLine("I am a mouse. Squeak.");
-            string message = Flee();
+
+            string message = Flee(); // Flee() returns a message about if flee or not
+            
+            /* If the message is an empty string, it means the mouse doesn't flee.
+             * Assigned a string about staying at the same location to the message.
+             */
             if (message == "")
             {
                 message = $"[Stay] A {species} stays at {location.x},{location.y}";
             }
             return message;
         }
-
-        /* Note that our mouse is (so far) a teeny bit more strategic than our cat.
-         * The mouse looks for cats and tries to run in the opposite direction to
-         * an empty spot, but if it finds that it can't go that way, it looks around
-         * some more. However, the mouse currently still has a major weakness! He
-         * will ONLY run in the OPPOSITE direction from a cat! The mouse won't (yet)
-         * consider running to the side to escape! However, we have laid out a better
-         * foundation here for intelligence, since we actually check whether our escape
-         * was succcesful -- unlike our cats, who just assume they'll get their prey!
-         */
-
     }
 }
 
