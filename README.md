@@ -2,6 +2,7 @@
 # Zoo Manager Improvements
 
 **Part A**
+
 First, I make the Animal class to be in charge of its action by moving Seek(), Attack(), and Retreat() from the Game class to the Animal class. So the Game class only set up the game interface and detect users' interaction to activate animals accordingly.
 
 Next, by adding preys array property and predators array property to the Animal class, I no longer have to manually type the target species for the Hunt() and Flee() methods in different animal subclasses. So I can move the Hunt() and Flee() methods to the Animal class for every subclass to share those methods. The Cat class overrides the Flee() method since it requires further detection while running away from a predator.
