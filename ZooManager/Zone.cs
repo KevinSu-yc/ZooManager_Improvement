@@ -1,12 +1,19 @@
 ﻿using System;
+
 namespace ZooManager
 {
+    /// <summary>
+    /// A class that holds Animal or empty string
+    /// </summary>
     public class Zone
     {
+        // Zone doesn't contain a Animal when it's created
         private Animal _occupant = null;
         public Animal occupant
         {
             get { return _occupant; }
+            
+            // When placing a Animal into a Zone, also set the Animal's location to be same as the Zone
             set {
                 _occupant = value;
                 if (_occupant != null) {
@@ -17,6 +24,9 @@ namespace ZooManager
 
         public Point location;
 
+        /* Readonly. If the Zone doesn't contains a Animal, it's emoji should be an empty string
+         * Is used to show emoji on the web page
+         */
         public string emoji
         {
             get
@@ -26,6 +36,9 @@ namespace ZooManager
             }
         }
 
+        /* Readonly. If the Zone doesn't contains a Animal, it's reaction time label should be an empty string
+         * Is used to show reaction time on the web page
+         */
         public string rtLabel // Reaction Time Label
         {
             get
@@ -35,15 +48,12 @@ namespace ZooManager
             }
         }
 
-        public string turnLabel // Turn On Board
-        {
-            get
-            {
-                if (occupant == null) return "";
-                return occupant.turnOnBoard.ToString();
-            }
-        }
-
+        /// <summary>
+        /// Creates a Zone that can hold Animal at a location
+        /// </summary>
+        /// <param name="x">x coordinate of the location of the Zone</param>
+        /// <param name="y">y coordinate of the location of the Zone</param>
+        /// <param name="animal">The Animal to be hold</param>
         public Zone(int x, int y, Animal animal)
         {
             location.x = x;

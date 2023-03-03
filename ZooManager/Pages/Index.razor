@@ -49,11 +49,13 @@
             </button>
         </div>
     </div>
+
     <div class="row">
         <div class="col">
             <hr />
         </div>
     </div>
+
     <div class="row">
         <div class="col-5">
             <h3 style="text-align:end">Add Animal to Holding:</h3>
@@ -83,11 +85,13 @@
             </button>
         </div>
     </div>
+
     <div class="row">
         <div class="col">
             <hr />
         </div>
     </div>
+
     <div class="row">
         <div class="col-5">
             <h3 style="text-align:end">Holding Pen:</h3>
@@ -98,11 +102,13 @@
             </button>
         </div>
     </div>
+
     <div class="row">
         <div class="col">
             <hr />
         </div>
     </div>
+
     <div class="row">
         <div class="col">
             <table align="center">
@@ -123,6 +129,8 @@
                 }
             </table>
         </div>
+
+        <!--(Feature s) Add an area for turn updates in the same row with the animal zones -->
         <div class="col-4 alert alert-secondary">
             <div class="row">
                 <div class="col">
@@ -131,6 +139,7 @@
             </div>
             <div class="row">
                 <div class="col">
+                    <!-- If it's turn 0, show Set Up Zoo, otherwise, show the turn number -->
                     <b>@(Game.turn == 0 ? "Set Up Zoo" : "Turn " + Game.turn)</b>
                     <ul class="list-unstyled">
                         @foreach (string updateMessage in Game.updateMessages)
