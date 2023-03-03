@@ -27,7 +27,7 @@ namespace ZooManager
          */
         public static List<string> updateMessages { get; private set; } = new List<string>();
 
-        /* The Zones are public for Animals to move around them
+        /* The Zones remain public for Animals to move around them
          */
         public static List<List<Zone>> animalZones = new List<List<Zone>>();
         public static Zone holdingPen = new Zone(-1, -1, null);
