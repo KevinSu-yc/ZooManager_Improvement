@@ -48,6 +48,15 @@ namespace ZooManager
             }
         }
 
+        public string turnLabel // Turn On Board Label
+        {
+            get
+            {
+                if (occupant == null) return "";
+                return occupant.turnOnBoard.ToString();
+            }
+        }
+
         /// <summary>
         /// Creates a Zone that can hold Animal at a location
         /// </summary>

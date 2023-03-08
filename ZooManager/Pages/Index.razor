@@ -17,6 +17,26 @@
         align-items: center;
         font-size: 30px;
     }
+
+    button.zone-box {
+        display: inline-flex;
+        width: 80px;
+        height: 80px;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    span.zone-emoji {
+        font-size: 26px;
+    }
+
+    span.zone-status {
+        font-size: 12px;
+        font-weight: bold;
+        line-height:1;
+    }
+
 </style>
 
 <div class="container">
@@ -31,17 +51,17 @@
             </button>
         </div>
         @*<div class="col-1">
-            <button @onclick="@(() => Game.AddZones(Direction.up))"
-                    type="button" class="sm btn btn-outline-dark">
-                <h2>⏫</h2>
-            </button>
-        </div>*@
+                <button @onclick="@(() => Game.AddZones(Direction.up))"
+                        type="button" class="sm btn btn-outline-dark">
+                    <h2>⏫</h2>
+                </button>
+            </div>*@
         @*<div class="col-1">
-            <button @onclick="@(() => Game.AddZones(Direction.left))"
-                    type="button" class="sm btn btn-outline-dark">
-                <h2>⏪</h2>
-            </button>
-        </div>*@
+                <button @onclick="@(() => Game.AddZones(Direction.left))"
+                        type="button" class="sm btn btn-outline-dark">
+                    <h2>⏪</h2>
+                </button>
+            </div>*@
         <div class="col-1">
             <button @onclick="@(() => Game.AddZones(Direction.right))"
                     type="button" class="sm btn btn-outline-dark">
@@ -102,11 +122,13 @@
         <div class="col-5">
             <h3 style="text-align:end">Holding Pen:</h3>
         </div>
-        <div class="col-6">
-            <button disabled type="button" class="btn btn-outline-dark">
-                <h2>@Game.holdingPen.emoji<sup>@Game.holdingPen.rtLabel</sup></h2>
+        <div class="col">
+            <button disabled type="button" class="btn btn-outline-dark zone-box">
+                <span class="zone-emoji">@Game.holdingPen.emoji</span>
+                <span class="zone-status">@(Game.holdingPen.rtLabel == "" ? "" : "React: " + Game.holdingPen.rtLabel) </span>
+                <span class="zone-status text-primary">@(Game.holdingPen.rtLabel == "" ? "" : "Turn: " + Game.holdingPen.turnLabel) </span>
             </button>
-        </div>
+        </div>    
     </div>
 
     <div class="row">
@@ -120,20 +142,23 @@
             <table align="center">
                 @for (var y = 0; y < Game.numCellsY; y++)
                 {
-                <tr>
-                    @for (var x = 0; x < Game.numCellsX; x++)
-                    {
-                        var a = Game.animalZones[y][x];
-                        <td>
-                        <button @onclick="@(() => Game.ZoneClick(a))"
-                            type="button" class="btn btn-outline-dark">
-                        <h2>@a.emoji<sup>@a.rtLabel</sup></h2>
-                        </button>
-                        </td>
-                    }
+                    <tr>
+                        @for (var x = 0; x < Game.numCellsX; x++)
+                        {
+                            var a = Game.animalZones[y][x];
+                            <td>
+                                <button @onclick="@(() => Game.ZoneClick(a))"
+                                        type="button" class="btn btn-outline-dark zone-box">
+                                    <span class="zone-emoji">@a.emoji</span>
+                                    <span class="zone-status">@(a.rtLabel == "" ? "" : "React: " + a.rtLabel) </span>
+                                    <span class="zone-status text-primary">@(a.rtLabel == "" ? "" : "Turn: " + a.turnLabel) </span>
+                                </button>
+                            </td>
+                        }
                     </tr>
                 }
             </table>
+
         </div>
 
         <!--(Feature s) Add an area for turn updates in the same row with the animal zones -->

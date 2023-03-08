@@ -202,7 +202,7 @@ namespace ZooManager
                 }
             }
 
-            GrowChicks(); // After every animal acts, call GrowAnimal to grow the animals that are ready
+            ActivateSpecialAnimals(); // After every animal acts, call GrowAnimal to grow the animals that are ready
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace ZooManager
         /// <summary>
         /// (Feature n) Go through the zones on board and replace the chicks that are mature with raptors
         /// </summary>
-        static public void GrowChicks()
+        static public void ActivateSpecialAnimals()
         {
             for (var y = 0; y < numCellsY; y++)
             {
@@ -239,10 +239,32 @@ namespace ZooManager
                          * if true, cast the occupant to Chick and call it's Mature() method 
                          * to see if it has stayed on board for over 3 turns
                          */
-                        if (zone.occupant.species == "chick" && ((Chick)zone.occupant).Mature())
+                        if (zone.occupant is Chick && ((Chick)zone.occupant).Mature())
                         {
                             zone.occupant = new Raptor("Rapty"); // Replace the occupant with raptor
                             updateMessages.Add($"[Grow] A chick at {x},{y} grows into a raptor after staying on board for over 3 turns"); // Add the message about growing the chick
+                        }
+
+                        if (zone.occupant is Mouse m)
+                        {
+                            switch (m.Reproduce())
+                            {
+                                case ((int)Direction.up):
+                                    updateMessages.Add($"[Reproduce] A mouse at {x},{y} reproduces a mouse at {x},{y - 1}");
+                                    break;
+                                case ((int)Direction.down):
+                                    updateMessages.Add($"[Reproduce] A mouse at {x},{y} reproduces a mouse at {x},{y + 1}");
+                                    break;
+                                case ((int)Direction.left):
+                                    updateMessages.Add($"[Reproduce] A mouse at {x},{y} reproduces a mouse at {x - 1},{y}");
+                                    break;
+                                case ((int)Direction.right):
+                                    updateMessages.Add($"[Reproduce] A mouse at {x},{y} reproduces a mouse at {x + 1},{y}");
+                                    break;
+                                case 4:
+                                    updateMessages.Add($"[Reproduce] A mouse at {x},{y} can't reproduces a mouse");
+                                    break;
+                            }
                         }
                     }
                 }

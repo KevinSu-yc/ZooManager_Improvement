@@ -79,7 +79,7 @@ namespace ZooManager
             foreach (string predator in predators)
             {
                 // If there is a predator in this direction, then it should retreat or attack if there's a prey in its way
-                if (Seek(location.x, location.y, Direction.up, predator))
+                if (Seek(location.x, location.y, Direction.up, predator) > 0)
                 {
                     // At this point, the cat must be taking an action related to Flee, set the beginning of the message here
                     message = "[Flee]";
@@ -88,7 +88,7 @@ namespace ZooManager
                     foreach (string prey in preys)
                     {
                         // If there's a prey, flee and hunt at the same time
-                        if (Seek(location.x, location.y, Direction.down, prey))
+                        if (Seek(location.x, location.y, Direction.down, prey) > 0)
                         {
                             message = $"[Flee & Hunt] A {species} at {location.x},{location.y} run away from a {predator} to {location.x},{location.y} to eat a {prey}";
                             Attack(this, Direction.down);
@@ -111,12 +111,12 @@ namespace ZooManager
 
                     break; // exit the loop to avoid moving more than 1 times
                 }
-                else if (Seek(location.x, location.y, Direction.down, predator))
+                else if (Seek(location.x, location.y, Direction.down, predator) > 0)
                 {
                     message = "[Flee]";
                     foreach (string prey in preys)
                     {
-                        if (Seek(location.x, location.y, Direction.up, prey))
+                        if (Seek(location.x, location.y, Direction.up, prey) > 0)
                         {
                             message = $"[Flee & Hunt] A {species} at {location.x},{location.y} run away from a {predator} to {location.x},{location.y} to eat a {prey}";
                             Attack(this, Direction.up);
@@ -137,12 +137,12 @@ namespace ZooManager
 
                     break;
                 }
-                else if (Seek(location.x, location.y, Direction.left, predator))
+                else if (Seek(location.x, location.y, Direction.left, predator) > 0)
                 {
                     message = "[Flee]";
                     foreach (string prey in preys)
                     {
-                        if (Seek(location.x, location.y, Direction.right, prey))
+                        if (Seek(location.x, location.y, Direction.right, prey) > 0)
                         {
                             message = $"[Flee & Hunt] A {species} at {location.x},{location.y} run away from a {predator} to {location.x},{location.y} to eat a {prey}";
                             Attack(this, Direction.right);
@@ -163,12 +163,12 @@ namespace ZooManager
 
                     break;
                 }
-                else if (Seek(location.x, location.y, Direction.right, predator))
+                else if (Seek(location.x, location.y, Direction.right, predator) > 0)
                 {
                     message = "[Flee]";
                     foreach (string prey in preys)
                     {
-                        if (Seek(location.x, location.y, Direction.left, prey))
+                        if (Seek(location.x, location.y, Direction.left, prey) > 0)
                         {
                             message = $"[Flee & Hunt] A {species} at {location.x},{location.y} run away from a {predator} to {location.x},{location.y} to eat {prey}";
                             Attack(this, Direction.left);

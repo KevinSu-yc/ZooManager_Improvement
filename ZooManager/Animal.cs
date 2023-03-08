@@ -55,7 +55,7 @@ namespace ZooManager
             foreach (string prey in preys) // Go through all preys
             {
                 // If there is a prey in the direction, attack and return message
-                if (Seek(location.x, location.y, Direction.up, prey))
+                if (Seek(location.x, location.y, Direction.up, prey) > 0)
                 {
                     message += $"[Hunt] A {species} at {location.x},{location.y} moves to ";
                     Attack(this, Direction.up);
@@ -63,7 +63,7 @@ namespace ZooManager
                     return message;
                 }
                 
-                if (Seek(location.x, location.y, Direction.down, prey))
+                if (Seek(location.x, location.y, Direction.down, prey) > 0)
                 {
                     message += $"[Hunt] A {species} at {location.x},{location.y} moves to ";
                     Attack(this, Direction.down);
@@ -71,7 +71,7 @@ namespace ZooManager
                     return message;
                 }
                 
-                if (Seek(location.x, location.y, Direction.left, prey))
+                if (Seek(location.x, location.y, Direction.left, prey) > 0)
                 {
                     message += $"[Hunt] A {species} at {location.x},{location.y} moves to ";
                     Attack(this, Direction.left);
@@ -79,7 +79,7 @@ namespace ZooManager
                     return message;
                 }
                 
-                if (Seek(location.x, location.y, Direction.right, prey))
+                if (Seek(location.x, location.y, Direction.right, prey) > 0)
                 {
                     message += $"[Hunt] A {species} at {location.x},{location.y} moves to ";
                     Attack(this, Direction.right);
@@ -111,7 +111,7 @@ namespace ZooManager
             foreach (string predator in predators) //Go through predators
             {
                 // If there's a predator at the direction
-                if (Seek(location.x, location.y, Direction.up, predator))
+                if (Seek(location.x, location.y, Direction.up, predator) > 0)
                 {
                     message += $"[Flee] A {species} at {location.x},{location.y} run away from ";
                     
@@ -127,7 +127,7 @@ namespace ZooManager
                     return message;
                 }
 
-                if (Seek(location.x, location.y, Direction.down, predator))
+                if (Seek(location.x, location.y, Direction.down, predator) > 0)
                 {
                     message += $"[Flee] A {species} at {location.x},{location.y} run away from ";
                     if (Retreat(this, Direction.up))
@@ -140,7 +140,7 @@ namespace ZooManager
                     return message;
                 }
 
-                if (Seek(location.x, location.y, Direction.left, predator))
+                if (Seek(location.x, location.y, Direction.left, predator) > 0)
                 {
                     message += $"[Flee] A {species} at {location.x},{location.y} run away from ";
                     if (Retreat(this, Direction.right))
@@ -153,7 +153,7 @@ namespace ZooManager
                     return message;
                 }
 
-                if (Seek(location.x, location.y, Direction.right, predator))
+                if (Seek(location.x, location.y, Direction.right, predator) > 0)
                 {
                     message += $"[Flee] A {species} at {location.x},{location.y} run away from ";
                     if (Retreat(this, Direction.left))

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace ZooManager
 {    
     /// <summary>
@@ -6,6 +9,8 @@ namespace ZooManager
      /// </summary>
     public class Mouse : Animal
     {
+        private bool reproduced = false;
+
         /// <summary>
         /// Initialize emoji, species, name, reaction time, predators of Mouse
         /// </summary>
@@ -42,8 +47,64 @@ namespace ZooManager
             if (message == "")
             {
                 message = $"[Stay] A {species} stays at {location.x},{location.y}";
+
+                /* If the Chick is mature, add message about getting ready to grow.
+                 * Otherwise, show how many turns the chick is staying on the board.
+                 */
+                if (!reproduced)
+                {
+                    if (turnOnBoard >= 4)
+                    {
+                        message += " (Ready to reproduce)";
+                    }
+                    else
+                    {
+                        message += $" (Reproduce {turnOnBoard}/3)"; // Mouse takes 3 turns to get ready to reproduce
+                    }
+                }
             }
             return message;
+        }
+
+        /// <summary>
+        /// (Feature q)
+        /// 
+        /// </summary>
+        public int Reproduce()
+        {
+            if (reproduced || turnOnBoard < 4)
+            {
+                return -1;
+            }
+
+            List<int> randomizedDirections = new List<int> { 0, 1, 2, 3 };
+            randomizedDirections = randomizedDirections.OrderBy(d => new Random().Next()).ToList();
+
+            foreach (int d in randomizedDirections)
+            {
+                if (Seek(location.x, location.y, (Direction)d) == 0)
+                {
+                    switch (d)
+                    {
+                        case ((int)Direction.up):
+                            Game.animalZones[location.y - 1][location.x].occupant = new Mouse("Squeaky");
+                            break;
+                        case ((int)Direction.down):
+                            Game.animalZones[location.y + 1][location.x].occupant = new Mouse("Squeaky");
+                            break;
+                        case ((int)Direction.left):
+                            Game.animalZones[location.y][location.x - 1].occupant = new Mouse("Squeaky");
+                            break;
+                        case ((int)Direction.right):
+                            Game.animalZones[location.y][location.x + 1].occupant = new Mouse("Squeaky");
+                            break;
+                    }
+                    reproduced = true;
+                    return d;
+                }
+            }
+
+            return 4;
         }
     }
 }

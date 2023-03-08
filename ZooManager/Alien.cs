@@ -56,7 +56,7 @@ namespace ZooManager
             string message = "";
             
             // If there is a prey in the direction, attack and return message
-            if (Seek(location.x, location.y, Direction.up))
+            if (Seek(location.x, location.y, Direction.up) > 0)
             {
                 string target = Game.animalZones[location.y - 1][location.x].occupant.species;
                 message += $"[Hunt] An {species} at {location.x},{location.y} moves to ";
@@ -65,7 +65,7 @@ namespace ZooManager
                 return message;
             }
                 
-            if (Seek(location.x, location.y, Direction.down))
+            if (Seek(location.x, location.y, Direction.down) > 0)
             {
                 string target = Game.animalZones[location.y + 1][location.x].occupant.species;
                 message += $"[Hunt] An {species} at {location.x},{location.y} moves to ";
@@ -74,7 +74,7 @@ namespace ZooManager
                 return message;
             }
                 
-            if (Seek(location.x, location.y, Direction.left))
+            if (Seek(location.x, location.y, Direction.left) > 0)
             {
                 string target = Game.animalZones[location.y][location.x - 1].occupant.species;
                 message += $"[Hunt] An {species} at {location.x},{location.y} moves to ";
@@ -83,7 +83,7 @@ namespace ZooManager
                 return message;
             }
                 
-            if (Seek(location.x, location.y, Direction.right))
+            if (Seek(location.x, location.y, Direction.right) > 0)
             {
                 string target = Game.animalZones[location.y][location.x + 1].occupant.species;
                 message += $"[Hunt] An {species} at {location.x},{location.y} moves to ";
@@ -132,7 +132,7 @@ namespace ZooManager
             Game.animalZones[y][x].occupant = null; // empty the zone where the attacker originally stayed
         }
 
-        protected override bool Seek(int x, int y, Direction d, string target = "")
+        protected override int Seek(int x, int y, Direction d, string target = "")
         {
             switch (d)
             {
@@ -150,9 +150,10 @@ namespace ZooManager
                     break;
             }
 
-            if (y < 0 || x < 0 || y > Game.numCellsY - 1 || x > Game.numCellsX - 1) return false; // The seeked Zone is out of range
-            if (Game.animalZones[y][x].occupant != null && Game.animalZones[y][x].occupant is Alien != true) return true; // The seeked Zone is not empty and is not an alien
-            return false;
+            if (y < 0 || x < 0 || y > Game.numCellsY - 1 || x > Game.numCellsX - 1) return -1; // The seeked Zone is out of range
+            if (Game.animalZones[y][x].occupant == null) return 0; // The seeked Zone is empty
+            if (Game.animalZones[y][x].occupant is Alien != true) return 1; // The seeked Zone contains an occupant that is not an alien
+            return -1;
         }
 
     }

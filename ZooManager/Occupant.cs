@@ -41,8 +41,8 @@ namespace ZooManager
         /// <param name="y">Y coordinate of the animal that is seeking</param>
         /// <param name="d">Direction to look at</param>
         /// <param name="target">a animal species to be seek</param>
-        /// <returns>Returns true if there's a target at the given direction, otherwise, return false</returns>
-        protected virtual bool Seek(int x, int y, Direction d, string target = "")
+        /// <returns>Returns -1 if seeked Zone is out of range or does not contain the target, returns 0 if seeked Zone is empty, returns 1 if seeked Zone contains the target</returns>
+        protected virtual int Seek(int x, int y, Direction d, string target = "")
         {
             switch (d)
             {
@@ -60,13 +60,13 @@ namespace ZooManager
                     break;
             }
 
-            if (y < 0 || x < 0 || y > Game.numCellsY - 1 || x > Game.numCellsX - 1) return false; // The seeked Zone is out of range
-            if (Game.animalZones[y][x].occupant == null) return false; // The seeked Zone is empty
+            if (y < 0 || x < 0 || y > Game.numCellsY - 1 || x > Game.numCellsX - 1) return -1; // The seeked Zone is out of range
+            if (Game.animalZones[y][x].occupant == null) return 0; // The seeked Zone is empty
             if (Game.animalZones[y][x].occupant.species == target)
             {
-                return true;
+                return 1;
             }
-            return false;
+            return -1;
         }
 
     }
