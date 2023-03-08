@@ -164,7 +164,8 @@ namespace ZooManager
             if (animalType == "mouse") holdingPen.occupant = new Mouse("Squeaky");
             if (animalType == "raptor") holdingPen.occupant = new Raptor("Rapty");
             if (animalType == "chick") holdingPen.occupant = new Chick("Chick");
-            
+            if (animalType == "alien") holdingPen.occupant = new Alien("ET");
+
             // Add a message about holding the animal
             string message = $"[Hold] Hold a {holdingPen.occupant.species}";
             updateMessages.Add(message);

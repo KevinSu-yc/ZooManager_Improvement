@@ -7,7 +7,7 @@ namespace ZooManager
     /// Create an Animal's subclass called Bird.
     /// Bird has two subclasses called Raptor and Chick
     /// </summary>
-    public class Bird : Animal
+    public abstract class Bird : Animal
     {
         /// <summary>
         /// Calls Activate() in Animal first, then prints a message about being a bird on Console.

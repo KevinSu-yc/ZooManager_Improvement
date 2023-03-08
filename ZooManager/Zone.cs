@@ -8,8 +8,8 @@ namespace ZooManager
     public class Zone
     {
         // Zone doesn't contain a Animal when it's created
-        private Animal _occupant = null;
-        public Animal occupant
+        private Occupant _occupant = null;
+        public Occupant occupant
         {
             get { return _occupant; }
             

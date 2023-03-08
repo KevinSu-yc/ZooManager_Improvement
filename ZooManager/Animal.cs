@@ -2,32 +2,15 @@
 
 namespace ZooManager
 {
-    public class Animal
+    public abstract class Animal : Occupant, IPredator, IPrey
     {
         /* I make all the properties except location of Animal 
          * to be readonly in classes that are not Animal or subclasses of Animal
          * so the information of the animals won't be affected directly
          */
-        public string emoji { get; protected set; }
-        public string species { get; protected set; }
-        public string name { get; protected set; }
-        public int reactionTime { get; protected set; } = 5; // default reaction time for animals is set to 5 (lower the faster)
-        public bool isActivated { get; protected set; } = false; // every animal starts as not activated
-        public int turnOnBoard { get; protected set; } = 0; // (Feature m) keep track of how many turns the animal is staying on board
-        
         // Arrays for preys and predators for different animals
         public string[] preys { get; protected set; }
         public string[] predators { get; protected set; }
-
-        public Point location;
-
-        /// <summary>
-        /// Print self location on the Console
-        /// </summary>
-        public void ReportLocation()
-        {
-            Console.WriteLine($"I am at {location.x},{location.y}");
-        }
 
         /// <summary>
         /// Print message about activating an animal on the Console,
@@ -35,7 +18,7 @@ namespace ZooManager
         /// Also add 1 turn to turn on board.
         /// </summary>
         /// <returns>Return the message about activating an animal</returns>
-        virtual public string Activate()
+        public override string Activate()
         {
             string message = $"Animal {name} at {location.x},{location.y} activated";
             Console.WriteLine(message);
@@ -47,7 +30,7 @@ namespace ZooManager
         /// <summary>
         /// Set the status of an animal to be not activated.
         /// </summary>
-        public void Deactivate()
+        public override void Deactivate()
         {
             isActivated = false; // (Feature o) At the end of a turn, switch the status back as not activated to get ready for a new turn
         }
@@ -187,42 +170,7 @@ namespace ZooManager
             return message; // return empty string if doesn't find a predator around
         }
 
-        /// <summary>
-        /// Check if there's a specific animal at a given direction 
-        /// according to the location of the animal that is seeking
-        /// </summary>
-        /// <param name="x">X coordinate of the animal that is seeking</param>
-        /// <param name="y">Y coordinate of the animal that is seeking</param>
-        /// <param name="d">Direction to look at</param>
-        /// <param name="target">a animal species to be seek</param>
-        /// <returns>Returns true if there's a target at the given direction, otherwise, return false</returns>
-        protected bool Seek(int x, int y, Direction d, string target)
-        {
-            switch (d)
-            {
-                case Direction.up:
-                    y--;
-                    break;
-                case Direction.down:
-                    y++;
-                    break;
-                case Direction.left:
-                    x--;
-                    break;
-                case Direction.right:
-                    x++;
-                    break;
-            }
-
-            if (y < 0 || x < 0 || y > Game.numCellsY - 1 || x > Game.numCellsX - 1) return false; // The seeked Zone is out of range
-            if (Game.animalZones[y][x].occupant == null) return false; // The seeked Zone is empty
-            if (Game.animalZones[y][x].occupant.species == target)
-            {
-                return true;
-            }
-            return false;
-        }
-
+        
         /// <summary>
         /// Should always be called after getting true from Seek().
         /// Assume that a prey is found at a given direction, replace the prey with acttacker
@@ -230,26 +178,32 @@ namespace ZooManager
         /// </summary>
         /// <param name="attacker">The Animal that is attcking</param>
         /// <param name="d">The direction to attack</param>
-        protected void Attack(Animal attacker, Direction d)
+        public void Attack(IPredator attacker, Direction d)
         {
-            Console.WriteLine($"{attacker.name} is attacking {d.ToString()}");
-            int x = attacker.location.x;
-            int y = attacker.location.y;
+            if (attacker is Animal == false)
+            {
+                return;
+            }
+            Animal animalAttacker = (Animal) attacker;
+            
+            // Console.WriteLine($"{animalAttacker.name} is attacking {d.ToString()}");
+            int x = animalAttacker.location.x;
+            int y = animalAttacker.location.y;
 
             // replace the target with acttacker according to the given direction
             switch (d)
             {
                 case Direction.up:
-                    Game.animalZones[y - 1][x].occupant = attacker;
+                    Game.animalZones[y - 1][x].occupant = animalAttacker;
                     break;
                 case Direction.down:
-                    Game.animalZones[y + 1][x].occupant = attacker;
+                    Game.animalZones[y + 1][x].occupant = animalAttacker;
                     break;
                 case Direction.left:
-                    Game.animalZones[y][x - 1].occupant = attacker;
+                    Game.animalZones[y][x - 1].occupant = animalAttacker;
                     break;
                 case Direction.right:
-                    Game.animalZones[y][x + 1].occupant = attacker;
+                    Game.animalZones[y][x + 1].occupant = animalAttacker;
                     break;
             }
             Game.animalZones[y][x].occupant = null; // empty the zone where the attacker originally stayed
@@ -263,11 +217,17 @@ namespace ZooManager
         /// <param name="runner">The animal that is running</param>
         /// <param name="d">The direction to run</param>
         /// <returns></returns>
-        protected bool Retreat(Animal runner, Direction d)
+        public bool Retreat(IPrey runner, Direction d)
         {
-            Console.WriteLine($"{runner.name} is retreating {d.ToString()}");
-            int x = runner.location.x;
-            int y = runner.location.y;
+            if (runner is Animal == false)
+            {
+                return false;
+            }
+            Animal animalRunner = (Animal) runner;
+
+            Console.WriteLine($"{animalRunner.name} is retreating {d.ToString()}");
+            int x = animalRunner.location.x;
+            int y = animalRunner.location.y;
 
             switch (d)
             {
@@ -280,7 +240,7 @@ namespace ZooManager
                      */
                     if (y > 0 && Game.animalZones[y - 1][x].occupant == null)
                     {
-                        Game.animalZones[y - 1][x].occupant = runner;
+                        Game.animalZones[y - 1][x].occupant = animalRunner;
                         Game.animalZones[y][x].occupant = null;
                         return true; // retreat was successful
                     }
@@ -297,7 +257,7 @@ namespace ZooManager
                 case Direction.down:
                     if (y < Game.numCellsY - 1 && Game.animalZones[y + 1][x].occupant == null)
                     {
-                        Game.animalZones[y + 1][x].occupant = runner;
+                        Game.animalZones[y + 1][x].occupant = animalRunner;
                         Game.animalZones[y][x].occupant = null;
                         return true;
                     }
@@ -305,7 +265,7 @@ namespace ZooManager
                 case Direction.left:
                     if (x > 0 && Game.animalZones[y][x - 1].occupant == null)
                     {
-                        Game.animalZones[y][x - 1].occupant = runner;
+                        Game.animalZones[y][x - 1].occupant = animalRunner;
                         Game.animalZones[y][x].occupant = null;
                         return true;
                     }
@@ -313,7 +273,7 @@ namespace ZooManager
                 case Direction.right:
                     if (x < Game.numCellsX - 1 && Game.animalZones[y][x + 1].occupant == null)
                     {
-                        Game.animalZones[y][x + 1].occupant = runner;
+                        Game.animalZones[y][x + 1].occupant = animalRunner;
                         Game.animalZones[y][x].occupant = null;
                         return true;
                     }
