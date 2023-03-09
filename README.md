@@ -8,6 +8,7 @@
 -   **(Feature r):** I added some CSS style to the holding pen and the Zones on board to show the occupants' emojis with their reaction time and the number of turns on board. I added labels for the information and use different text colors to differentiate them.
 
 **Goal #2**
+
 I created two interfaces called **IPredator** and **IPrey.**
 **IPredator** has a string list property called preys that can keep all the species IPredator hunts. Also, it has two methods that are related to hunting prey called **Attack** and **Hunt.**
 
@@ -16,6 +17,7 @@ I created two interfaces called **IPredator** and **IPrey.**
 I made the **Animal** class implements both IPredator and IPrey interfaces since I think every animal can have their preys and predators even if we haven't assigned any in this assignment. Also, it matched the decision I made for the last assignment when I moved **Attack, Hunt, Retreat, Flee, and Seek** method to the Animal class. At last, to get ready for Goal #3, I created a **parent class of Animal** called **Occupant** so I can extend it with a new **Alien** class.
 
 **Goal #3**
+
 I created a new class called **Alien** that is **not related to Animal** but implements the **IPredator** interface. To let the Zones be able to contain Alien and Animal, I created a new class called **Occupant** to be **Alien and Animal's parent class.** In addition, I moved the **Seek** method up to the Occupant class so Alien can also use it. However, Alien hunts all species except themselves so the way they seek should be slightly different. So I override the **Seek** method to not look for a specific species but to look for a target that is not an alien.
 
 ---
