@@ -1,7 +1,7 @@
 ﻿
 # Zoo Manager Improvements & C# Interfaces Implementation
 
-**HW8 Updates**
+### HW8 Updates
 
 **Goal #1**
 -   **(Feature q):** For the **Mouse** class, I added a **Reproduce** method so that when a mouse stays on the board for over 3 turns, it creates a new mouse randomly in an orthogonal adjacent Zone that is empty. Each mouse can only reproduce once. I modified the **Seek** method so the target string parameter is optional since I wanted to call it to look for an empty Zone. To do so, instead of returning a bool, I let the Seek method returns int so I can get different numbers that represent different seek results such as finding an empty Zone or finding a specific target. At last, I renamed the **GrowChicks** method I created in Game to **ActivateSpecialAnimals** so now it not only activates Chick's Mature method but also activates Mouse's Reproduce Method after every occupant on board takes their actions.
@@ -21,6 +21,8 @@ I made the **Animal** class implements both IPredator and IPrey interfaces since
 I created a new class called **Alien** that is **not related to Animal** but implements the **IPredator** interface. To let the Zones be able to contain Alien and Animal, I created a new class called **Occupant** to be **Alien and Animal's parent class.** In addition, I moved the **Seek** method up to the Occupant class so Alien can also use it. However, Alien hunts all species except themselves so the way they seek should be slightly different. So I override the **Seek** method to not look for a specific species but to look for a target that is not an alien.
 
 ---
+
+### Previous Updates
 
 **Part A**
 
