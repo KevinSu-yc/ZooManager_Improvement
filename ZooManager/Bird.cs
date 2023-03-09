@@ -6,6 +6,7 @@ namespace ZooManager
     /// (Feature b)
     /// Create an Animal's subclass called Bird.
     /// Bird has two subclasses called Raptor and Chick
+    /// I make this class abstract since it should not be instantiated
     /// </summary>
     public abstract class Bird : Animal
     {

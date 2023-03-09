@@ -2,8 +2,16 @@
 
 namespace ZooManager
 {
+    /// <summary>
+    /// The parent of Animal and Alien that have the properties for taking actions in Zones
+    /// I make this class abstract since it should not be instantiated
+    /// </summary>
      abstract public class Occupant 
     {
+        /* I make all the properties except location of Occupant 
+         * to be readonly in classes that are not Occupant or subclasses of Occupant
+         * so the information of the occupant won't be affected directly
+         */
         public string emoji { get; protected set; }
         public string species { get; protected set; }
         public string name { get; protected set; }
@@ -34,16 +42,18 @@ namespace ZooManager
         }
 
         /// <summary>
-        /// Check if there's a specific animal at a given direction 
-        /// according to the location of the animal that is seeking
+        /// Check if there's a specific occupant at a given direction 
+        /// according to the location of the occupant that is seeking
         /// </summary>
-        /// <param name="x">X coordinate of the animal that is seeking</param>
-        /// <param name="y">Y coordinate of the animal that is seeking</param>
+        /// <param name="x">X coordinate of the occupant that is seeking</param>
+        /// <param name="y">Y coordinate of the occupant that is seeking</param>
         /// <param name="d">Direction to look at</param>
-        /// <param name="target">a animal species to be seek</param>
+        /// <param name="target">optional, a occupant species to be seek</param>
         /// <returns>Returns -1 if seeked Zone is out of range or does not contain the target, returns 0 if seeked Zone is empty, returns 1 if seeked Zone contains the target</returns>
-        protected virtual int Seek(int x, int y, Direction d, string target = "")
+        protected virtual int Seek(int x, int y, Direction d, string target = "") 
         {
+            // I make the target string parameter optional here because mouse also use seek to find empty zone to reproduce. When finding empty zone, target string is not needed.
+
             switch (d)
             {
                 case Direction.up:

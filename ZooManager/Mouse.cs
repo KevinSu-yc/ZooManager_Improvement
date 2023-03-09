@@ -9,6 +9,7 @@ namespace ZooManager
      /// </summary>
     public class Mouse : Animal
     {
+        // (Feature q) Keep track of whether if the mouse reproduced
         private bool reproduced = false;
 
         /// <summary>
@@ -22,11 +23,11 @@ namespace ZooManager
             this.name = name;
             reactionTime = new Random().Next(1, 4); // Mouse's reaction time can be 1 to 5
 
-            /* Mouse runs away from Cat and Raptor
-             * Assign an array of 2 string that represent Cat and Raptors species
-             * Is used in Animal.Flee(), loop through predators array to detect "cat" and "raptor"
+            /* Mouse runs away from Cat, Raptor, and Alien
+             * Assign an array of 3 string that represent Cat, Raptors, and Alien species
+             * Is used in Animal.Flee(), loop through predators array to detect "cat", "raptor", and "alien"
              */
-            predators = new string[2] { "cat", "raptor" };
+            predators = new string[3] { "cat", "raptor", "alien" };
         }
 
         /// <summary>
@@ -48,11 +49,12 @@ namespace ZooManager
             {
                 message = $"[Stay] A {species} stays at {location.x},{location.y}";
 
-                /* If the Chick is mature, add message about getting ready to grow.
-                 * Otherwise, show how many turns the chick is staying on the board.
-                 */
+                // If the Mouse hasn't reproduced yet
                 if (!reproduced)
                 {
+                    /* If the number of turns on board is enough, show message about getting ready to reproduce
+                     * Otherwise, show how many turn is away from reproduce
+                     */
                     if (turnOnBoard >= 4)
                     {
                         message += " (Ready to reproduce)";
@@ -68,43 +70,52 @@ namespace ZooManager
 
         /// <summary>
         /// (Feature q)
-        /// 
+        /// When a Mouse stays on the board for over 3 turns, 
+        /// randomly reproduce a new Mouse in a orthogonal adjacent Zone that is empty.
+        /// A Mouse only reproduces once.
         /// </summary>
+        /// <returns>Returns int that represent the direction to reproduce</returns>
         public int Reproduce()
         {
+            // If the mouse has reproduced or the number of turns on board is not enough
             if (reproduced || turnOnBoard < 4)
             {
-                return -1;
+                return -1; // return -1 directly so won't reproduce
             }
 
+            /* Create a list of int from 0 to 3 and use Linq OrderBy method to shuffle the int in the list.
+             * Later use this list of int to call Seek method in a random order 
+             */
             List<int> randomizedDirections = new List<int> { 0, 1, 2, 3 };
             randomizedDirections = randomizedDirections.OrderBy(d => new Random().Next()).ToList();
 
+            // Use the list of int to call Seek method in a random order 
             foreach (int d in randomizedDirections)
             {
-                if (Seek(location.x, location.y, (Direction)d) == 0)
+                if (Seek(location.x, location.y, (Direction)d) == 0) // Animal.Seek returns 0 when the seeked Zone is empty
                 {
-                    switch (d)
+                    // If the seeked Zone is empty, put a new Mouse into that Zone
+                    switch ((Direction)d)
                     {
-                        case ((int)Direction.up):
+                        case (Direction.up):
                             Game.animalZones[location.y - 1][location.x].occupant = new Mouse("Squeaky");
                             break;
-                        case ((int)Direction.down):
+                        case (Direction.down):
                             Game.animalZones[location.y + 1][location.x].occupant = new Mouse("Squeaky");
                             break;
-                        case ((int)Direction.left):
+                        case (Direction.left):
                             Game.animalZones[location.y][location.x - 1].occupant = new Mouse("Squeaky");
                             break;
-                        case ((int)Direction.right):
+                        case (Direction.right):
                             Game.animalZones[location.y][location.x + 1].occupant = new Mouse("Squeaky");
                             break;
                     }
                     reproduced = true;
-                    return d;
+                    return d; // returns the int that represent the seeking direction
                 }
             }
 
-            return 4;
+            return 4; // returns 4 if there's no empty Zone to reproduce
         }
     }
 }

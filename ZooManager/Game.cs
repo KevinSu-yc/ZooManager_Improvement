@@ -22,18 +22,18 @@ namespace ZooManager
         public static int turn { get; private set; } = 0;
         
         /* (Feature s)
-         * A list of message(string) about important actions of each turn of Animal activations
+         * A list of message(string) about important actions of each turn of activations
          * Is used in Index.razor to print the messages onto the web page
          */
         public static List<string> updateMessages { get; private set; } = new List<string>();
 
-        /* The Zones remain public for Animals to move around them
+        /* The Zones remain public for Occupants to move around them
          */
         public static List<List<Zone>> animalZones = new List<List<Zone>>();
         public static Zone holdingPen = new Zone(-1, -1, null);
 
         /// <summary>
-        /// Create a board of Zones for Animals to take actions on
+        /// Create a board of Zones for Occupant to take actions on
         /// </summary>
         static public void SetUpGame()
         {
@@ -47,7 +47,7 @@ namespace ZooManager
         }
 
         /// <summary>
-        /// Add a row or a column of Zones to the animal board
+        /// Add a row or a column of Zones to the board
         /// Currently only able to add the Zones to the right or the left
         /// </summary>
         /// <param name="d">Direction to add the Zones</param>
@@ -80,7 +80,7 @@ namespace ZooManager
 
         /// <summary>
         /// Called when a Zone is clicked. Check the holding pen and the clicked zone
-        /// to decide whether to activates the animals on board or not
+        /// to decide whether to activates the occupants on board or not
         /// </summary>
         /// <param name="clickedZone">The clicked Zone</param>
         static public void ZoneClick(Zone clickedZone)
@@ -90,14 +90,14 @@ namespace ZooManager
             // Console.Write("Held animal is ");
             // Console.WriteLine(holdingPen.emoji == "" ? "none" : holdingPen.emoji);
 
-            if (clickedZone.occupant != null) clickedZone.occupant.ReportLocation(); // Report the location of the clicked zone if it contains an Animal
+            if (clickedZone.occupant != null) clickedZone.occupant.ReportLocation(); // Report the location of the clicked zone if it contains an Occupant
 
-            // If the holding pen is empty and the clicked zone contain an Animal, take animal from zone to holding pen
+            // If the holding pen is empty and the clicked zone contain an Occupant, take occupant from zone to holding pen
             if (holdingPen.occupant == null && clickedZone.occupant != null)
             {
-                NewTurn(); // Call NewTurn() to get ready for a new turn when the click activates Animals
+                NewTurn(); // Call NewTurn() to get ready for a new turn when the click activates Occupants
 
-                // take animal from zone to holding pen
+                // take occupant from zone to holding pen
                 Console.WriteLine("Taking " + clickedZone.emoji);
                 holdingPen.occupant = clickedZone.occupant;
                 holdingPen.occupant.location.x = -1;
@@ -107,9 +107,9 @@ namespace ZooManager
                 // Add a message about the action to the list
                 updateMessages.Add($"[Hold] Hold a {holdingPen.occupant.species}");
 
-                ActivateAnimals(); // Activates the Animals on the board
+                ActivateOccupants(); // Activates the Occupants on the board
             }
-            // If the holding pen contain an Animal and the clicked zone is empty, put animal in zone from holding pen
+            // If the holding pen contain an Occupant and the clicked zone is empty, put Occupant in zone from holding pen
             else if (holdingPen.occupant != null && clickedZone.occupant == null)
             {
                 NewTurn();
@@ -122,63 +122,64 @@ namespace ZooManager
                 holdingPen.occupant = null;
                 Console.WriteLine("Empty spot now holds: " + clickedZone.emoji);
                 
-                ActivateAnimals();
+                ActivateOccupants();
             }
-            // If both the holding pen and the clicked zone contain an Animal, don't activate animals
+            // If both the holding pen and the clicked zone contain an Occupant, don't activate Occupants
             else if (holdingPen.occupant != null && clickedZone.occupant != null)
             {
-                // Don't call NewTurn() since the animals are not activated under this condition
+                // Don't call NewTurn() since the occupants are not activated under this condition
 
                 Console.WriteLine("Could not place animal.");
                 updateMessages.Add("[Action Failed] Could not place animal");
-                // Don't activate animals since user didn't get to do anything
+                // Don't activate occupants since user didn't get to do anything
             }
 
-            /* (Feature o) In order to let every Animal to only take one action in a turn
-             * I create a property for Animal to keep track of if it's activated
-             * So at the end of each turn, have to call DeactivateAnimals() to reset the activate status for the a new turn
+            /* (Feature o) In order to let every Occupant to only take one action in a turn
+             * I create a property for Occupant to keep track of if it's activated
+             * So at the end of each turn, have to call DeactivateOccupants() to reset the activate status for the a new turn
              */
-            DeactivateAnimals();
+            DeactivateOccupants();
         }
 
         /// <summary>
-        /// When a new Animal is chosen to add to holding pen, check the holding pen
-        /// to see it's possible to hold a new Animal and activate the animals on board
+        /// When a new occupant is chosen to add to holding pen, check the holding pen
+        /// to see it's possible to hold a new Occupant and activate the occupants on board
         /// </summary>
-        /// <param name="animalType">The chosen type of Animal</param>
-        static public void AddAnimalToHolding(string animalType)
+        /// <param name="occupantType">The chosen type of Animal</param>
+        static public void AddOccupantToHolding(string occupantType)
         {
-            // if already hold an animal
+            // if already hold an occupant
             if (holdingPen.occupant != null)
             {
                 // Add a message about action failed
-                updateMessages.Add("[Action Failed] Can't hold a new animal");
-                return; // return directly so the animals on board are not activated and the game remain the same turn
+                updateMessages.Add("[Action Failed] Can't hold a new occupant");
+                return; // return directly so the occupants on board are not activated and the game remain the same turn
             }
 
-            // Able to add animal to holding pen, call NewTurn() to get ready
+            // Able to add occupant to holding pen, call NewTurn() to get ready
             NewTurn();
 
-            // Add the animal to holdign pen accrording to the animal type
-            if (animalType == "cat") holdingPen.occupant = new Cat("Fluffy");
-            if (animalType == "mouse") holdingPen.occupant = new Mouse("Squeaky");
-            if (animalType == "raptor") holdingPen.occupant = new Raptor("Rapty");
-            if (animalType == "chick") holdingPen.occupant = new Chick("Chick");
-            if (animalType == "alien") holdingPen.occupant = new Alien("ET");
+            // Add the occupant to holding pen accrording to the occupant type
+            if (occupantType == "cat") holdingPen.occupant = new Cat("Fluffy");
+            if (occupantType == "mouse") holdingPen.occupant = new Mouse("Squeaky");
+            if (occupantType == "raptor") holdingPen.occupant = new Raptor("Rapty");
+            if (occupantType == "chick") holdingPen.occupant = new Chick("Chick");
+            if (occupantType == "alien") holdingPen.occupant = new Alien("ET");
 
-            // Add a message about holding the animal
+            // Add a message about holding the occupant
             string message = $"[Hold] Hold a {holdingPen.occupant.species}";
             updateMessages.Add(message);
             Console.WriteLine(message);
 
-            ActivateAnimals(); // Activates animals for current turn
-            DeactivateAnimals(); // Deactivate animals for next turn
+            ActivateOccupants(); // Activates occupants for current turn
+            DeactivateOccupants(); // Deactivate occupants for next turn
         }
 
         /// <summary>
-        /// Go through all the zones on board to activate all the animals in the order of their reaction time
+        /// Go through all the zones on board to activate all the occupants in the order of their reaction time
+        /// After every ocupant is activated, 
         /// </summary>
-        static public void ActivateAnimals()
+        static public void ActivateOccupants()
         {
             for (var r = 1; r < 11; r++) // reaction times from 1 to 10
             {
@@ -208,7 +209,7 @@ namespace ZooManager
         /// <summary>
         /// Deactivate all the animals on board
         /// </summary>
-        static public void DeactivateAnimals()
+        static public void DeactivateOccupants()
         {
             for (var y = 0; y < numCellsY; y++)
             {
@@ -224,7 +225,10 @@ namespace ZooManager
         }
 
         /// <summary>
-        /// (Feature n) Go through the zones on board and replace the chicks that are mature with raptors
+        /// After activating all the animals on board,
+        /// Go through the zones on board again to activate the animals that have special features
+        /// (Feature n) Replace the chicks that are mature with raptors
+        /// (Feature q) Let mice to reproduce if they are ready
         /// </summary>
         static public void ActivateSpecialAnimals()
         {
@@ -245,20 +249,22 @@ namespace ZooManager
                             updateMessages.Add($"[Grow] A chick at {x},{y} grows into a raptor after staying on board for over 3 turns"); // Add the message about growing the chick
                         }
 
+                        // If the occupant is Mouse, cast it to Mouse
                         if (zone.occupant is Mouse m)
                         {
+                            // Create a message about reproducing a mouse in a specific location according to the direction or not able to reproduce
                             switch (m.Reproduce())
                             {
-                                case ((int)Direction.up):
+                                case (((int)Direction.up)):
                                     updateMessages.Add($"[Reproduce] A mouse at {x},{y} reproduces a mouse at {x},{y - 1}");
                                     break;
-                                case ((int)Direction.down):
+                                case (((int)Direction.down)):
                                     updateMessages.Add($"[Reproduce] A mouse at {x},{y} reproduces a mouse at {x},{y + 1}");
                                     break;
-                                case ((int)Direction.left):
+                                case (((int)Direction.left)):
                                     updateMessages.Add($"[Reproduce] A mouse at {x},{y} reproduces a mouse at {x - 1},{y}");
                                     break;
-                                case ((int)Direction.right):
+                                case (((int)Direction.right)):
                                     updateMessages.Add($"[Reproduce] A mouse at {x},{y} reproduces a mouse at {x + 1},{y}");
                                     break;
                                 case 4:

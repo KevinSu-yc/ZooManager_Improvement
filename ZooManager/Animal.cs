@@ -2,12 +2,14 @@
 
 namespace ZooManager
 {
+    /// <summary>
+    /// The parent of all kinds of animals.
+    /// Extends Occupant and implements IPredator and IPrey 
+    /// since I think every animal can have their preys and predators even if we haven't assigned any in this assignment
+    /// I make this class abstract since it should not be instantiated
+    /// </summary>
     public abstract class Animal : Occupant, IPredator, IPrey
     {
-        /* I make all the properties except location of Animal 
-         * to be readonly in classes that are not Animal or subclasses of Animal
-         * so the information of the animals won't be affected directly
-         */
         // Arrays for preys and predators for different animals
         public string[] preys { get; protected set; }
         public string[] predators { get; protected set; }
@@ -52,38 +54,36 @@ namespace ZooManager
             }
 
             string message = "";
+            Occupant target;
+
             foreach (string prey in preys) // Go through all preys
             {
-                // If there is a prey in the direction, attack and return message
-                if (Seek(location.x, location.y, Direction.up, prey) > 0)
+                target = Attack(this, Direction.up, prey); // Attack Return the occupant that is being attacked
+                // If target is not null, it means the alien attacks successfully, create and return the message about attacking
+                if (target != null)
                 {
-                    message += $"[Hunt] A {species} at {location.x},{location.y} moves to ";
-                    Attack(this, Direction.up);
-                    message += $"{location.x},{location.y} to eat a {prey}";
+                    message += $"[Hunt] An {species} at {location.x},{location.y + 1} moves to {location.x},{location.y} to hunt a {target.species}";
                     return message;
                 }
-                
-                if (Seek(location.x, location.y, Direction.down, prey) > 0)
+
+                target = Attack(this, Direction.down, prey);
+                if (target != null)
                 {
-                    message += $"[Hunt] A {species} at {location.x},{location.y} moves to ";
-                    Attack(this, Direction.down);
-                    message += $"{location.x},{location.y} to eat a {prey}";
+                    message += $"[Hunt] An {species} at {location.x},{location.y - 1} moves to {location.x},{location.y} to hunt a {target.species}";
                     return message;
                 }
-                
-                if (Seek(location.x, location.y, Direction.left, prey) > 0)
+
+                target = Attack(this, Direction.left, prey);
+                if (target != null)
                 {
-                    message += $"[Hunt] A {species} at {location.x},{location.y} moves to ";
-                    Attack(this, Direction.left);
-                    message += $"{location.x},{location.y} to eat a {prey}";
+                    message += $"[Hunt] An {species} at {location.x + 1},{location.y} moves to {location.x},{location.y} to hunt a {target.species}";
                     return message;
                 }
-                
-                if (Seek(location.x, location.y, Direction.right, prey) > 0)
+
+                target = Attack(this, Direction.right, prey);
+                if (target != null)
                 {
-                    message += $"[Hunt] A {species} at {location.x},{location.y} moves to ";
-                    Attack(this, Direction.right);
-                    message += $"{location.x},{location.y} to eat a {prey}";
+                    message += $"[Hunt] A {species} at {location.x - 1},{location.y} moves to {location.x},{location.y} to hunt a {target.species}";
                     return message;
                 }
             }
@@ -93,7 +93,7 @@ namespace ZooManager
 
         /* After making the preys property for Animal class, I think the Flee method 
          * can also be shared to every subclass instead of creating creating the method separately as before.
-         * This method should be override if the subclass needs more detection like Cat
+         * This method should be override if the subclass needs more detection (Cat, Raptor)
          */
 
         /// <summary>
@@ -170,22 +170,34 @@ namespace ZooManager
             return message; // return empty string if doesn't find a predator around
         }
 
-        
+
         /// <summary>
-        /// Should always be called after getting true from Seek().
-        /// Assume that a prey is found at a given direction, replace the prey with acttacker
+        /// In this version, I modify this attack method to call seek before attacking,
+        /// so this method no longer need to be called after a seek method.
+        /// If a prey is found at a given direction, replace the prey with acttacker
         /// and empty the zone where the attacker originally stayed
         /// </summary>
         /// <param name="attacker">The Animal that is attcking</param>
         /// <param name="d">The direction to attack</param>
-        public void Attack(IPredator attacker, Direction d)
+        /// <returns>Returns the occupant that is being attacked</returns>
+        public Occupant Attack(IPredator attacker, Direction d, string target = "")
         {
+            Occupant prey = null;
+
+            // While calling Animal.Attack, the attacker should be an animal. If not return null directly.
             if (attacker is Animal == false)
             {
-                return;
+                return prey;
             }
+
+            // Create an animal attacker by casting the attaker into an animal. Use the animal attacker to call Animal's methods later
             Animal animalAttacker = (Animal) attacker;
-            
+            if (Seek(animalAttacker.location.x, animalAttacker.location.y, d, target) <= 0)
+            {
+                // If the seeked Zone is out of range, doesn't contain the taret, or empty, don't attack and return null directly
+                return prey;
+            }
+
             // Console.WriteLine($"{animalAttacker.name} is attacking {d.ToString()}");
             int x = animalAttacker.location.x;
             int y = animalAttacker.location.y;
@@ -194,38 +206,44 @@ namespace ZooManager
             switch (d)
             {
                 case Direction.up:
+                    prey = Game.animalZones[y - 1][x].occupant; // Keep track of the occupant that is being attacked to return it later
                     Game.animalZones[y - 1][x].occupant = animalAttacker;
                     break;
                 case Direction.down:
+                    prey = Game.animalZones[y + 1][x].occupant;
                     Game.animalZones[y + 1][x].occupant = animalAttacker;
                     break;
                 case Direction.left:
+                    prey = Game.animalZones[y][x - 1].occupant;
                     Game.animalZones[y][x - 1].occupant = animalAttacker;
                     break;
                 case Direction.right:
+                    prey = Game.animalZones[y][x + 1].occupant;
                     Game.animalZones[y][x + 1].occupant = animalAttacker;
                     break;
             }
             Game.animalZones[y][x].occupant = null; // empty the zone where the attacker originally stayed
+            return prey;
         }
 
         /// <summary>
-        /// Should always be called after getting true from Seek().
+        /// Should always be called after getting 1 from Seek().
         /// Assume that a predator is found at a given direction, move the runner to the opposite direction if possible
         /// and empty the zone where the attacker originally stayed if run successfully
         /// </summary>
-        /// <param name="runner">The animal that is running</param>
+        /// <param name="runner">The prey that is running</param>
         /// <param name="d">The direction to run</param>
-        /// <returns></returns>
+        /// <returns>Returns false if the runner is not an animal or fail to retreat. Returns true if retreat successfully.</returns>
         public bool Retreat(IPrey runner, Direction d)
         {
+            // While calling Animal.Retreat, the runner should be an animal. If not, return false directly.
             if (runner is Animal == false)
             {
                 return false;
             }
-            Animal animalRunner = (Animal) runner;
+            Animal animalRunner = (Animal) runner; // Create an animal runner by casting the runner into an animal. Use the animal runner to call Animal's methods later
 
-            Console.WriteLine($"{animalRunner.name} is retreating {d.ToString()}");
+            // Console.WriteLine($"{animalRunner.name} is retreating {d.ToString()}");
             int x = animalRunner.location.x;
             int y = animalRunner.location.y;
 
@@ -242,9 +260,9 @@ namespace ZooManager
                     {
                         Game.animalZones[y - 1][x].occupant = animalRunner;
                         Game.animalZones[y][x].occupant = null;
-                        return true; // retreat was successful
+                        return true; // retreat successfully
                     }
-                    return false; // retreat was not successful
+                    return false; // fail to retreat
 
                 /* Note that in these four cases, in our conditional logic we check
                  * for the animal having one square between itself and the edge that it is

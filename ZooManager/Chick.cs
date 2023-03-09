@@ -24,12 +24,11 @@ namespace ZooManager
             reactionTime = new Random().Next(6, 11); // Chick's reaction time can be 6 to 10
 
             /* (Feature c)
-             * Chick runs away from Cat
-             * Assign an array of 1 string that represent Cat's species
-             * Is used in Animal.Flee(), loop through predators array to detect "cat".
-             * I make predators an array because there might be another class that has more than 1 predators.
+             * Chick runs away from Cat and Alien
+             * Assign an array of 2 string that represent Cat and Alien's species
+             * Is used in Animal.Flee(), loop through predators array to detect "cat" and "alien".
              */
-            predators = new string[1] { "cat" };
+            predators = new string[2] { "cat", "alien" };
         }
 
         /// <summary>

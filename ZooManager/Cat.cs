@@ -19,12 +19,12 @@ namespace ZooManager
             reactionTime = new Random().Next(1, 6); // Cat's reaction time can be 1 to 5
 
             /* (Feature e)
-             * Cat hunts Chick and Mouse, run away from Raptor.
+             * Cat hunts Chick and Mouse, run away from Raptor and Alien.
              * Assigned the arrays of strings to preys and predators accordingly.
              * Are used in Hunt() and Flee()
              */
-            preys = new string[2] { "chick", "mouse" };
-            predators = new string[1] { "raptor" };
+            preys = new string[2] { "chick", "mouse"};
+            predators = new string[2] { "raptor", "alien" };
         }
 
         /// <summary>
@@ -42,14 +42,14 @@ namespace ZooManager
              */
             string message = Flee(); 
 
-            /* If the message is an empty string, it means the raptor doesn't flee.
+            /* If the message is an empty string, it means the cat doesn't flee.
              * Check if it's possible to Hunt.
              */
             if (message == "")
             {
                 message = Hunt(); // Hunt() returns a message about if hunt or not
 
-                /* If the message is an empty string, it means the raptor doesn't hunt.
+                /* If the message is an empty string, it means the cat doesn't hunt.
                  * Assigned a string about staying at the same location to the message.
                  */
                 if (message == "")

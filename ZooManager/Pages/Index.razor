@@ -18,11 +18,15 @@
         font-size: 30px;
     }
 
+
+    /* (Feature r)
+     * Add style to animal zones to show reaction time and turn on board on the game interface
+     */
     button.zone-box {
         display: inline-flex;
         width: 80px;
         height: 80px;
-        flex-direction: column;
+        flex-direction: column; /* arrange the elements in this class from top to bottom */
         justify-content: center;
         align-items: center;
     }
@@ -34,7 +38,7 @@
     span.zone-status {
         font-size: 12px;
         font-weight: bold;
-        line-height:1;
+        line-height: 1; /* space between lines of text */
     }
 
 </style>
@@ -81,31 +85,31 @@
             <h3 style="text-align:end">Add Animal to Holding:</h3>
         </div>
         <div class="col-1">
-            <button @onclick="@(() => Game.AddAnimalToHolding("cat"))"
+            <button @onclick="@(() => Game.AddOccupantToHolding("cat"))"
                     type="button" class="sm btn btn-outline-dark">
                 🐱
             </button>
         </div>
         <div class="col-1">
-            <button @onclick="@(() => Game.AddAnimalToHolding("mouse"))"
+            <button @onclick="@(() => Game.AddOccupantToHolding("mouse"))"
                     type="button" class="sm btn btn-outline-dark">
                 🐭
             </button>
         </div>
         <div class="col-1">
-            <button @onclick="@(() => Game.AddAnimalToHolding("raptor"))"
+            <button @onclick="@(() => Game.AddOccupantToHolding("raptor"))"
                     type="button" class="sm btn btn-outline-dark">
                 🦅
             </button>
         </div>
         <div class="col-1">
-            <button @onclick="@(() => Game.AddAnimalToHolding("chick"))"
+            <button @onclick="@(() => Game.AddOccupantToHolding("chick"))"
                     type="button" class="sm btn btn-outline-dark">
                 🐥
             </button>
         </div>
         <div class="col-1">
-            <button @onclick="@(() => Game.AddAnimalToHolding("alien"))"
+            <button @onclick="@(() => Game.AddOccupantToHolding("alien"))"
                     type="button" class="sm btn btn-outline-dark">
                 👽
             </button>
@@ -123,8 +127,13 @@
             <h3 style="text-align:end">Holding Pen:</h3>
         </div>
         <div class="col">
+            <!-- (Feature r)
+            In each animal zone, under the emoji, display the numbers of reaction time and turn on board with a label before them
+            -->
             <button disabled type="button" class="btn btn-outline-dark zone-box">
                 <span class="zone-emoji">@Game.holdingPen.emoji</span>
+
+                <!-- if the number is an empty string, remain empty, otherwise, add a label before it to describe the number -->
                 <span class="zone-status">@(Game.holdingPen.rtLabel == "" ? "" : "React: " + Game.holdingPen.rtLabel) </span>
                 <span class="zone-status text-primary">@(Game.holdingPen.rtLabel == "" ? "" : "Turn: " + Game.holdingPen.turnLabel) </span>
             </button>

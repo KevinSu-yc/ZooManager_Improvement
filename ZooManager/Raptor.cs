@@ -5,7 +5,7 @@ namespace ZooManager
     /// <summary>
     /// (Feature a & b)
     /// Create a class called Raptor and make it Bird's subclass.
-    /// Raptor hunts Cat and Mouse and doesn't have predators.
+    /// Raptor hunts Cat and Mouse, runs away from Alien
     /// </summary>
     public class Raptor : Bird
     {
@@ -67,7 +67,7 @@ namespace ZooManager
         /// <summary>
         /// (Feature e)
         /// Overrides Animal.Flee() with more advanced detection.
-        /// While Cat flees, it detects whether there's a prey on its way.
+        /// While Raptor flees, it detects whether there's a prey on its way.
         /// Create a message according to different condition.
         /// </summary>
         /// <returns>Returns a message about the action made while calling this method.</returns>
@@ -81,7 +81,7 @@ namespace ZooManager
                 // If there is a predator in this direction, then it should retreat or attack if there's a prey in its way
                 if (Seek(location.x, location.y, Direction.up, predator) > 0)
                 {
-                    // At this point, the cat must be taking an action related to Flee, set the beginning of the message here
+                    // At this point, the raptor must be taking an action related to Flee, set the beginning of the message here
                     message = "[Flee]";
 
                     // Go through every preys to check if there is one in the way to flee
@@ -103,7 +103,7 @@ namespace ZooManager
                         }
                     }
 
-                    // If the message remain "[Flee]" at this point, it means the cat can't run away from the predator
+                    // If the message remain "[Flee]" at this point, it means the raptor can't run away from the predator
                     if (message == "[Flee]")
                     {
                         message = $"[Flee] A {species} at {location.x},{location.y} can't run away from a {predator}";

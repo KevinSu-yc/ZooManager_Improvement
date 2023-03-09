@@ -1,6 +1,9 @@
 ﻿
 namespace ZooManager
 {
+    /// <summary>
+    /// Interface that runs away from predators
+    /// </summary>
     public interface IPrey
     {
         string[] predators { get; }
